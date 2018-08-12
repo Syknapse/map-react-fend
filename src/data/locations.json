@@ -1,0 +1,16 @@
+[
+    {
+        "name": "Albaicín",
+        "coordinates": {
+            "lat": 37.182633,
+            "lng": -3.593436
+        }
+    },
+    {
+        "name": "Alhambra",
+        "coordinates": {
+            "lat": 37.174355,
+            "lng": -3.586059
+        }
+    }
+]

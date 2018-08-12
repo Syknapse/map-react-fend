@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from 'react'
+import * as Locations from '../src/data/locations.json'
+import './App.css'
 
 class App extends Component {
 
 	constructor() {
 		super()
 		this.state = {
-			map: ''
+			map: '',
+			locations: Locations
 		}
 	}
 
@@ -19,15 +21,18 @@ class App extends Component {
 		const plazaLarga = {lat: 37.182652, lng: -3.593314}
 		let map = new window.google.maps.Map(document.getElementById('map'), {
 			center: plazaLarga,
-			zoom: 20
+			zoom: 15
 		})
-		let marker = new window.google.maps.Marker({
-			position: plazaLarga,
-			map: map
+
+		this.state.locations.forEach( location => {
+			new window.google.maps.Marker({
+				position: location.coordinates,
+				map: map
+			})
 		})
 	}
 
-	loadMap() {
+	loadMap = () => {
 		// Create a script tag for the Google map credentials
 		const mapScript = document.createElement('script')
 		mapScript.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyA7S0jbcOmdypcdzYL8ZXA9JG1BGbcRNzY&callback=initMap'
@@ -37,7 +42,7 @@ class App extends Component {
 		document.body.appendChild(mapScript)
 	}
 
-	testWiki() {
+	testWiki = () => {
 		fetch('https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=200&exintro&explaintext&titles=Albaicín&format=json&origin=*&formatversion=2')
 			.then( response => response.json())
 			.then( data => {
@@ -49,10 +54,11 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+				<aside>bruhahahaaa</aside>
         <div id="map" role="application"></div>
       </div>
     );
   }
 }
 
-export default App;
+export default App

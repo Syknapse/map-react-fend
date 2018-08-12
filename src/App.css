@@ -1,3 +1,20 @@
 #map {
 	height: 100%;
+	position: unset !important;
+}
+
+aside {
+	height: 100vh;
+	width: 30%;
+	min-width: 300px;
+	max-width: 400px;
+	position: fixed;
+	background: #ff000066;
+	z-index: 2;
+}
+
+@media screen and (max-width: 830px) {
+	aside {
+		height: 10vh;
+	}
 }
