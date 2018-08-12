@@ -12,7 +12,7 @@ class App extends Component {
 
 	componentDidMount() {
 		this.loadMap()
-		// this.testWiki()
+		this.testWiki()
 	}
 
 	initMap = () => {
@@ -37,6 +37,14 @@ class App extends Component {
 		document.body.appendChild(mapScript)
 	}
 
+	testWiki() {
+		fetch('https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=200&exintro&explaintext&titles=Albaicín&format=json&origin=*&formatversion=2')
+			.then( response => response.json())
+			.then( data => {
+				console.log('data', data)
+				console.log(data.query.pages[0].extract)
+			})
+	}
 
   render() {
     return (
