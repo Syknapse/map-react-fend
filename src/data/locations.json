@@ -1,13 +1,44 @@
 [
     {
         "name": "Albaicín",
+        "title": "Albaicín, historic neighbourhood",
+        "label": "A",
         "coordinates": {
             "lat": 37.182633,
             "lng": -3.593436
         }
     },
     {
+        "name": "Flamenco",
+        "title": "Live flamenco in a cave",
+        "label": "F",
+        "coordinates": {
+            "lat": 37.182138,
+            "lng": -3.584021
+        }
+    },
+    {
+        "name": "Tapas",
+        "title": "Great tapas",
+        "label": "T",
+        "coordinates": {
+            "lat": 37.183885,
+            "lng": -3.593633
+        }
+    },
+    {
+        "name": "Sacromonte",
+        "title": "Sacromonte, picturesque neighbourhood",
+        "label": "S",
+        "coordinates": {
+            "lat": 37.181659,
+            "lng": -3.576900
+        }
+    },
+    {
         "name": "Alhambra",
+        "title": "Alhambra, a magnificent palace and gardens",
+        "label": "H",
         "coordinates": {
             "lat": 37.174355,
             "lng": -3.586059

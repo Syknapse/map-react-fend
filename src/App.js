@@ -8,7 +8,8 @@ class App extends Component {
 		super()
 		this.state = {
 			map: '',
-			locations: Locations
+			locations: Locations,
+			markers: []
 		}
 	}
 
@@ -19,17 +20,30 @@ class App extends Component {
 
 	initMap = () => {
 		const plazaLarga = {lat: 37.182652, lng: -3.593314}
-		let map = new window.google.maps.Map(document.getElementById('map'), {
+		let map = new  window.google.maps.Map(document.getElementById('map'), {
 			center: plazaLarga,
 			zoom: 15
 		})
+		this.setState( { map } )
 
 		this.state.locations.forEach( location => {
-			new window.google.maps.Marker({
+			let marker = new window.google.maps.Marker({
 				position: location.coordinates,
-				map: map
+				map: map,
+				title: location.title,
+				label: location.label,
+				animation: window.google.maps.Animation.DROP
 			})
+			this.state.markers.push(marker)
+			// add event listener to each marker to open info display. pass 'location' to display function 
+			// this could be google map's infowindow
 		})
+		// MARKER ANIMATION BOUNCE: marker.setAnimation(window.google.maps.Animation.BOUNCE)
+		console.log(this.state.markers)
+	}
+
+	displayInfo = ( location ) => {
+		// take location.wiki, add to url, fetch wiki page
 	}
 
 	loadMap = () => {
