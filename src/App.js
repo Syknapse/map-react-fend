@@ -15,7 +15,6 @@ class App extends Component {
 
 	componentDidMount() {
 		this.loadMap()
-		this.testWiki()
 	}
 
 	initMap = () => {
@@ -35,15 +34,23 @@ class App extends Component {
 				animation: window.google.maps.Animation.DROP
 			})
 			this.state.markers.push(marker)
-			// add event listener to each marker to open info display. pass 'location' to display function 
+			// add event listener to each marker to open info display. pass 'location' to display function
 			// this could be google map's infowindow
+			marker.addListener('click', () => {
+				this.displayInfo(location)
+			})
 		})
 		// MARKER ANIMATION BOUNCE: marker.setAnimation(window.google.maps.Animation.BOUNCE)
-		console.log(this.state.markers)
+		// console.log(this.state.markers)
 	}
 
 	displayInfo = ( location ) => {
 		// take location.wiki, add to url, fetch wiki page
+		fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=200&exintro&explaintext&titles=${location.wiki}&format=json&origin=*&formatversion=2`)
+			.then( response => response.json())
+			.then( data => {
+				console.log(data.query.pages[0].extract)
+			})
 	}
 
 	loadMap = () => {
@@ -56,14 +63,14 @@ class App extends Component {
 		document.body.appendChild(mapScript)
 	}
 
-	testWiki = () => {
+	/* testWiki = () => {
 		fetch('https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=200&exintro&explaintext&titles=Albaicín&format=json&origin=*&formatversion=2')
 			.then( response => response.json())
 			.then( data => {
 				console.log('data', data)
 				console.log(data.query.pages[0].extract)
 			})
-	}
+	} */
 
   render() {
     return (
