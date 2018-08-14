@@ -4,11 +4,12 @@ import './App.css'
 
 class App extends Component {
 
-	constructor() {
-		super()
+	constructor(props) {
+		super(props)
 		this.state = {
 			map: '',
 			locations: Locations,
+			locationInfo: [],
 			markers: []
 		}
 	}
@@ -34,10 +35,20 @@ class App extends Component {
 				animation: window.google.maps.Animation.DROP
 			})
 			this.state.markers.push(marker)
+			let info = 'Monkey in the skies with diamonds'
+			let infowindow = new window.google.maps.InfoWindow({
+				content: info
+			})
 			// add event listener to each marker to open info display. pass 'location' to display function
 			// this could be google map's infowindow
+
+			// this.displayInfo(location)
+			// console.log( this.state )
+			// console.log( this.state.locations )
+			// console.log(this.state.map)
 			marker.addListener('click', () => {
-				this.displayInfo(location)
+				infowindow.open(map, marker)
+				console.log(this.state)
 			})
 		})
 		// MARKER ANIMATION BOUNCE: marker.setAnimation(window.google.maps.Animation.BOUNCE)
@@ -49,7 +60,13 @@ class App extends Component {
 		fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=200&exintro&explaintext&titles=${location.wiki}&format=json&origin=*&formatversion=2`)
 			.then( response => response.json())
 			.then( data => {
-				console.log(data.query.pages[0].extract)
+				let text = data.query.pages[0].extract
+				console.log(text)
+				// this.setState( { locationInfo: text } )
+				// console.log( this.state.locationInfo )
+				// console.log( this.state )
+				// console.log(this.state.locationInfo)
+				// this.state.locationInfo.push(text)
 			})
 	}
 
