@@ -70,16 +70,49 @@ class App extends Component {
 			marker.title === location.title
 		)
 		marker[0].setAnimation(window.google.maps.Animation.BOUNCE)
-		console.log(marker)
+		setTimeout( () => marker[0].setAnimation(null), 2100)
 	}
 
-	option = (name) => {
-		return( <option key={name}>{ name }</option> )
+	optionFilter = (e) => {
+
+		console.log(e.target.value)
+		this.state.locations.forEach( location => {
+			// let places = document.querySelectorAll('.place')
+			let thisPlace = document.querySelector(`#${location.name}`)
+
+			if (e.target.value === 'all') {
+				console.log('show all goddamit!!')
+			} else if (e.target.value === thisPlace.id) {
+				thisPlace.style.display = 'block'
+				this.placeActions(location)
+			} else {
+				thisPlace.style.display = 'none'
+			}
+			// console.log(thisPlace.id)
+		})
+		/* let marker = this.state.markers.filter( marker =>
+			marker.title === location.title
+		) */
+		// marker[0].setAnimation(window.google.maps.Animation.BOUNCE)
+		// setTimeout( () => marker[0].setAnimation(null), 2100)
+	}
+
+	selectorFilter = () => {
+		return(
+			<select onChange={ this.optionFilter } name="" id="">
+				<option value="all">All</option>
+				{ this.state.locations.map( location => this.option(location) ) }
+			</select>
+		 )
+	}
+
+	option = (location) => {
+		return( <option value={ location.name } key={ location.name }> { location.name } </option> )
 	}
 
 	place = (location) => {
 		return (
-			<div onClick={ () => this.placeActions(location) } >
+			<div id={location.name} className='place' key={ location.name } onClick={ () => this.placeActions(location) } >
 				<h3>{ location.name }</h3>
 				<div>{ location.title }</div>
 				<hr/>
@@ -91,10 +124,7 @@ class App extends Component {
     return (
       <div className="App">
 				<aside>
-					<select name="" id="">
-						<option>All</option>
-						{ this.state.locations.map( location => this.option(location.name) ) }
-					</select>
+					{ this.selectorFilter() }
 					<section>
 						<h2>Granada Places</h2>
 						{ this.state.locations.map( location => this.place(location) ) }
