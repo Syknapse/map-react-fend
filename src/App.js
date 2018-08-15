@@ -9,7 +9,7 @@ class App extends Component {
 		this.state = {
 			map: '',
 			locations: Locations,
-			locationInfo: [],
+			locationInfo: '',
 			markers: []
 		}
 	}
@@ -19,9 +19,9 @@ class App extends Component {
 	}
 
 	initMap = () => {
-		const plazaLarga = {lat: 37.182652, lng: -3.593314}
+		const cuestaDelInfierno = {lat: 37.179307, lng: -3.588260}
 		let map = new  window.google.maps.Map(document.getElementById('map'), {
-			center: plazaLarga,
+			center: cuestaDelInfierno,
 			zoom: 15
 		})
 		this.setState( { map } )
@@ -32,41 +32,25 @@ class App extends Component {
 				map: map,
 				title: location.title,
 				label: location.label,
-				animation: window.google.maps.Animation.DROP
+				animation: window.google.maps.Animation.DROP,
 			})
 			this.state.markers.push(marker)
-			let info = 'Monkey in the skies with diamonds'
-			let infowindow = new window.google.maps.InfoWindow({
-				content: info
-			})
-			// add event listener to each marker to open info display. pass 'location' to display function
-			// this could be google map's infowindow
 
-			// this.displayInfo(location)
-			// console.log( this.state )
-			// console.log( this.state.locations )
-			// console.log(this.state.map)
 			marker.addListener('click', () => {
-				infowindow.open(map, marker)
-				console.log(this.state)
+				this.displayInfo(location)
 			})
 		})
-		// MARKER ANIMATION BOUNCE: marker.setAnimation(window.google.maps.Animation.BOUNCE)
-		// console.log(this.state.markers)
 	}
 
-	displayInfo = ( location ) => {
-		// take location.wiki, add to url, fetch wiki page
+	displayInfo = (location) => {
 		fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=200&exintro&explaintext&titles=${location.wiki}&format=json&origin=*&formatversion=2`)
 			.then( response => response.json())
 			.then( data => {
-				let text = data.query.pages[0].extract
-				console.log(text)
-				// this.setState( { locationInfo: text } )
-				// console.log( this.state.locationInfo )
-				// console.log( this.state )
-				// console.log(this.state.locationInfo)
-				// this.state.locationInfo.push(text)
+				let info = data.query.pages[0].extract
+
+				this.setState( {
+					locationInfo: info
+				} )
 			})
 	}
 
@@ -80,22 +64,46 @@ class App extends Component {
 		document.body.appendChild(mapScript)
 	}
 
-	/* testWiki = () => {
-		fetch('https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=200&exintro&explaintext&titles=Albaicín&format=json&origin=*&formatversion=2')
-			.then( response => response.json())
-			.then( data => {
-				console.log('data', data)
-				console.log(data.query.pages[0].extract)
-			})
-	} */
+	placeActions = (location) => {
+		this.displayInfo(location)
+		let marker = this.state.markers.filter( marker =>
+			marker.title === location.title
+		)
+		marker[0].setAnimation(window.google.maps.Animation.BOUNCE)
+		console.log(marker)
+	}
+
+	option = (name) => {
+		return( <option key={name}>{ name }</option> )
+	}
+
+	place = (location) => {
+		return (
+			<div onClick={ () => this.placeActions(location) } >
+				<h3>{ location.name }</h3>
+				<div>{ location.title }</div>
+				<hr/>
+			</div>
+		)
+	}
 
   render() {
     return (
       <div className="App">
-				<aside>bruhahahaaa</aside>
+				<aside>
+					<select name="" id="">
+						<option>All</option>
+						{ this.state.locations.map( location => this.option(location.name) ) }
+					</select>
+					<section>
+						<h2>Granada Places</h2>
+						{ this.state.locations.map( location => this.place(location) ) }
+					</section>
+					<div onClick={ this.initMap }>{ this.state.locationInfo }</div>
+				</aside>
         <div id="map" role="application"></div>
       </div>
-    );
+    )
   }
 }
 
