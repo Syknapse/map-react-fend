@@ -31,13 +31,13 @@ class App extends Component {
 				position: location.coordinates,
 				map: map,
 				title: location.title,
-				label: location.label,
 				animation: window.google.maps.Animation.DROP,
 			})
 			this.state.markers.push(marker)
 
 			marker.addListener('click', () => {
-				this.displayInfo(location)
+				// this.displayInfo(location)
+				this.placeActions(location)
 			})
 		})
 	}
@@ -50,7 +50,7 @@ class App extends Component {
 
 				this.setState( {
 					locationInfo: info
-				} )
+				})
 			})
 	}
 
@@ -77,11 +77,14 @@ class App extends Component {
 
 		console.log(e.target.value)
 		this.state.locations.forEach( location => {
-			// let places = document.querySelectorAll('.place')
+			let places = document.querySelectorAll('.place')
 			let thisPlace = document.querySelector(`#${location.name}`)
 
 			if (e.target.value === 'all') {
-				console.log('show all goddamit!!')
+				places.forEach( place => {
+					place.style.display = 'block'
+				})
+				this.setState( { locationInfo: '' } )
 			} else if (e.target.value === thisPlace.id) {
 				thisPlace.style.display = 'block'
 				this.placeActions(location)
