@@ -42,6 +42,16 @@ class App extends Component {
 		})
 	}
 
+	loadMap = () => {
+		// Create a script tag for the Google map credentials
+		const mapScript = document.createElement('script')
+		mapScript.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyA7S0jbcOmdypcdzYL8ZXA9JG1BGbcRNzY&callback=initMap'
+		mapScript.async = true
+
+		window.initMap = this.initMap
+		document.body.appendChild(mapScript)
+	}
+
 	displayInfo = (location) => {
 		fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=200&exintro&explaintext&titles=${location.wiki}&format=json&origin=*&formatversion=2`)
 			.then( response => response.json())
@@ -54,15 +64,6 @@ class App extends Component {
 			})
 	}
 
-	loadMap = () => {
-		// Create a script tag for the Google map credentials
-		const mapScript = document.createElement('script')
-		mapScript.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyA7S0jbcOmdypcdzYL8ZXA9JG1BGbcRNzY&callback=initMap'
-		mapScript.async = true
-
-		window.initMap = this.initMap
-		document.body.appendChild(mapScript)
-	}
 
 	placeActions = (location) => {
 		this.displayInfo(location)
@@ -91,13 +92,7 @@ class App extends Component {
 			} else {
 				thisPlace.style.display = 'none'
 			}
-			// console.log(thisPlace.id)
 		})
-		/* let marker = this.state.markers.filter( marker =>
-			marker.title === location.title
-		) */
-		// marker[0].setAnimation(window.google.maps.Animation.BOUNCE)
-		// setTimeout( () => marker[0].setAnimation(null), 2100)
 	}
 
 	selectorFilter = () => {
@@ -126,15 +121,16 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-				<aside>
-					{ this.selectorFilter() }
-					<section>
-						<h2>Granada Places</h2>
-						{ this.state.locations.map( location => this.place(location) ) }
-					</section>
-					<div onClick={ this.initMap }>{ this.state.locationInfo }</div>
-				</aside>
-        <div id="map" role="application"></div>
+			<aside>
+				{ this.selectorFilter() }
+				<section>
+					<h2>Granada Places</h2>
+					{ this.state.locations.map( location => this.place(location) ) }
+				</section>
+				<h4>From Wikipedia:</h4>
+				<div>{ this.state.locationInfo }</div>
+			</aside>
+        	<div id="map" role="application"></div>
       </div>
     )
   }
