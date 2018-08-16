@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import * as Locations from '../src/data/locations.json'
+import Place from '../src/Place'
 import './App.css'
 
 class App extends Component {
@@ -125,16 +126,6 @@ class App extends Component {
 		return( <option value={ location.name } key={ location.name }> { location.name } </option> )
 	}
 
-	place = (location) => {
-		return (
-			<div id={location.name} className='place' key={ location.name } onClick={ () => this.displayInfo(location) } >
-				<h3>{ location.name }</h3>
-				<div>{ location.title }</div>
-				<hr/>
-			</div>
-		)
-	}
-
 	display = () => {
 		return (
 			<div>
@@ -151,7 +142,13 @@ class App extends Component {
 					{ this.selectorFilter() }
 					<section>
 						<h2>Granada Places</h2>
-						{ this.state.locations.map( location => this.place(location) ) }
+						{ this.state.locations.map( location => (
+							<Place
+								key= { location.name }
+								location= { location }
+								onPlaceClick= { this.displayInfo }
+							/>
+						))}
 					</section>
 						{ this.display() }
 				</aside>
