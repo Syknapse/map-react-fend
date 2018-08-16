@@ -135,6 +135,15 @@ class App extends Component {
 		)
 	}
 
+	display = () => {
+		return (
+			<div>
+				<h4>From Wikipedia:</h4>
+				<div>{ this.state.locationInfo }</div>
+			</div>
+		)
+	}
+
   render() {
     return (
       <div className="App">
@@ -144,8 +153,7 @@ class App extends Component {
 						<h2>Granada Places</h2>
 						{ this.state.locations.map( location => this.place(location) ) }
 					</section>
-					<h4>From Wikipedia:</h4>
-					<div>{ this.state.locationInfo }</div>
+						{ this.display() }
 				</aside>
 				<div id="map" role="application"></div>
       </div>
