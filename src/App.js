@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import * as Locations from '../src/data/locations.json'
 import Place from '../src/Place'
+import Filter from '../src/Filter'
 import './App.css'
 
 class App extends Component {
@@ -113,19 +114,6 @@ class App extends Component {
 		})
 	}
 
-	selectorFilter = () => {
-		return(
-			<select onChange={ this.optionFilter } name="" id="place-filter">
-				<option value="all">All</option>
-				{ this.state.locations.map( location => this.option(location) ) }
-			</select>
-		 )
-	}
-
-	option = (location) => {
-		return( <option value={ location.name } key={ location.name }> { location.name } </option> )
-	}
-
 	display = () => {
 		return (
 			<div>
@@ -139,7 +127,10 @@ class App extends Component {
     return (
       <div className="App">
 				<aside>
-					{ this.selectorFilter() }
+					<Filter
+						locations= { this.state.locations }
+						onSelectorChange= { this.optionFilter }
+					/>
 					<section>
 						<h2>Granada Places</h2>
 						{ this.state.locations.map( location => (
