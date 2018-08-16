@@ -36,8 +36,7 @@ class App extends Component {
 			this.state.markers.push(marker)
 
 			marker.addListener('click', () => {
-				// this.displayInfo(location)
-				this.placeActions(location)
+				this.displayInfo(location)
 			})
 		})
 	}
@@ -52,7 +51,7 @@ class App extends Component {
 		document.body.appendChild(mapScript)
 	}
 
-	displayInfo = (location) => {
+	fetchInfo = (location) => {
 		fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=200&exintro&explaintext&titles=${location.wiki}&format=json&origin=*&formatversion=2`)
 			.then( response => response.json())
 			.then( data => {
@@ -64,9 +63,8 @@ class App extends Component {
 			})
 	}
 
-
-	placeActions = (location) => {
-		this.displayInfo(location)
+	displayInfo = (location) => {
+		this.fetchInfo(location)
 		let marker = this.state.markers.filter( marker =>
 			marker.title === location.title
 		)
@@ -74,21 +72,40 @@ class App extends Component {
 		setTimeout( () => marker[0].setAnimation(null), 2100)
 	}
 
-	optionFilter = (e) => {
+	filterInfo = (location) => {
+		this.fetchInfo(location)
+		this.state.markers.forEach( marker => {
+			marker.setMap(this.state.map)
+			if (marker.title === location.title) {
+				marker.setAnimation(window.google.maps.Animation.BOUNCE)
+				setTimeout( () => marker.setAnimation(null), 2100)
+			} else {
+				marker.setMap(null)
+			}
+		})
+	}
 
-		console.log(e.target.value)
+	resetAll = () => {
+		let places = document.querySelectorAll('.place')
+		places.forEach( place => {
+			place.style.display = 'block'
+		})
+		this.state.markers.forEach( marker => {
+			marker.setMap(this.state.map)
+			marker.setAnimation(window.google.maps.Animation.DROP)
+		})
+		this.setState( { locationInfo: '' } )
+	}
+
+	optionFilter = (e) => {
 		this.state.locations.forEach( location => {
-			let places = document.querySelectorAll('.place')
 			let thisPlace = document.querySelector(`#${location.name}`)
 
 			if (e.target.value === 'all') {
-				places.forEach( place => {
-					place.style.display = 'block'
-				})
-				this.setState( { locationInfo: '' } )
+				this.resetAll()
 			} else if (e.target.value === thisPlace.id) {
 				thisPlace.style.display = 'block'
-				this.placeActions(location)
+				this.filterInfo(location)
 			} else {
 				thisPlace.style.display = 'none'
 			}
@@ -97,7 +114,7 @@ class App extends Component {
 
 	selectorFilter = () => {
 		return(
-			<select onChange={ this.optionFilter } name="" id="">
+			<select onChange={ this.optionFilter } name="" id="place-filter">
 				<option value="all">All</option>
 				{ this.state.locations.map( location => this.option(location) ) }
 			</select>
@@ -110,7 +127,7 @@ class App extends Component {
 
 	place = (location) => {
 		return (
-			<div id={location.name} className='place' key={ location.name } onClick={ () => this.placeActions(location) } >
+			<div id={location.name} className='place' key={ location.name } onClick={ () => this.displayInfo(location) } >
 				<h3>{ location.name }</h3>
 				<div>{ location.title }</div>
 				<hr/>
@@ -121,16 +138,16 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-			<aside>
-				{ this.selectorFilter() }
-				<section>
-					<h2>Granada Places</h2>
-					{ this.state.locations.map( location => this.place(location) ) }
-				</section>
-				<h4>From Wikipedia:</h4>
-				<div>{ this.state.locationInfo }</div>
-			</aside>
-        	<div id="map" role="application"></div>
+				<aside>
+					{ this.selectorFilter() }
+					<section>
+						<h2>Granada Places</h2>
+						{ this.state.locations.map( location => this.place(location) ) }
+					</section>
+					<h4>From Wikipedia:</h4>
+					<div>{ this.state.locationInfo }</div>
+				</aside>
+				<div id="map" role="application"></div>
       </div>
     )
   }
