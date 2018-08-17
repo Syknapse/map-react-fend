@@ -118,10 +118,14 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+				<div id="map" role="application"></div>
 				<aside>
 					<Filter
 						locations= { this.state.locations }
 						onSelectorChange= { this.optionFilter }
+					/>
+					<Display
+						info= { this.state.locationInfo }
 					/>
 					<section>
 						<h2>Granada Places</h2>
@@ -133,11 +137,7 @@ class App extends Component {
 							/>
 						))}
 					</section>
-						<Display
-							info= { this.state.locationInfo }
-						/>
 				</aside>
-				<div id="map" role="application"></div>
       </div>
     )
   }
