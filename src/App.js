@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import * as Locations from '../src/data/locations.json'
+import Place from '../src/Place'
+import Filter from '../src/Filter'
+import Display from '../src/Display'
 import './App.css'
 
 class App extends Component {
@@ -112,50 +115,29 @@ class App extends Component {
 		})
 	}
 
-	selectorFilter = () => {
-		return(
-			<select onChange={ this.optionFilter } name="" id="place-filter">
-				<option value="all">All</option>
-				{ this.state.locations.map( location => this.option(location) ) }
-			</select>
-		 )
-	}
-
-	option = (location) => {
-		return( <option value={ location.name } key={ location.name }> { location.name } </option> )
-	}
-
-	place = (location) => {
-		return (
-			<div id={location.name} className='place' key={ location.name } onClick={ () => this.displayInfo(location) } >
-				<h3>{ location.name }</h3>
-				<div>{ location.title }</div>
-				<hr/>
-			</div>
-		)
-	}
-
-	display = () => {
-		return (
-			<div>
-				<h4>From Wikipedia:</h4>
-				<div>{ this.state.locationInfo }</div>
-			</div>
-		)
-	}
-
   render() {
     return (
       <div className="App">
+				<div id="map" role="application"></div>
 				<aside>
-					{ this.selectorFilter() }
+					<Filter
+						locations= { this.state.locations }
+						onSelectorChange= { this.optionFilter }
+					/>
+					<Display
+						info= { this.state.locationInfo }
+					/>
 					<section>
 						<h2>Granada Places</h2>
-						{ this.state.locations.map( location => this.place(location) ) }
+						{ this.state.locations.map( location => (
+							<Place
+								key= { location.name }
+								location= { location }
+								onPlaceClick= { this.displayInfo }
+							/>
+						))}
 					</section>
-						{ this.display() }
 				</aside>
-				<div id="map" role="application"></div>
       </div>
     )
   }
