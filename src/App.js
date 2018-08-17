@@ -43,11 +43,14 @@ class App extends Component {
 			zoom: 15
 		})
 		this.setState( { map } )
+		this.createMarkers()
+	}
 
+	createMarkers = () => {
 		this.state.locations.forEach( location => {
 			let marker = new window.google.maps.Marker({
 				position: location.coordinates,
-				map: map,
+				map: this.state.map,
 				title: location.title,
 				animation: window.google.maps.Animation.DROP,
 			})
@@ -60,16 +63,19 @@ class App extends Component {
 	}
 
 	fetchInfo = (location) => {
+		this.animateOut()
 		fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=500&exintro&explaintext&titles=${location.wiki}&format=json&origin=*&formatversion=2`)
 			.then( response => response.json())
 			.then( data => {
 				let info = data.query.pages[0].extract
 				let infoTitle = data.query.pages[0].title
 
+				// Info to display about each place and the title used in the link url
 				this.setState( {
 					locationInfo: info,
 					locationLink: infoTitle
 				})
+				this.animateIn()
 			})
 			.catch( error => {
 				this.setState( {
@@ -79,23 +85,27 @@ class App extends Component {
 			})
 	}
 
+	bounceMarker = (marker) => {
+		marker.setAnimation(window.google.maps.Animation.BOUNCE)
+		setTimeout( () => marker.setAnimation(null), 2100)
+	}
+
+	// Display info and bounce selected marker
 	displayInfo = (location) => {
 		this.fetchInfo(location)
 		let marker = this.state.markers.filter( marker =>
 			marker.title === location.title
 		)
-		marker[0].setAnimation(window.google.maps.Animation.BOUNCE)
-		setTimeout( () => marker[0].setAnimation(null), 2100)
-		this.animateDisplay()
+		this.bounceMarker(marker[0])
 	}
 
-	filterInfo = (location) => {
+	// Display info and remove unselected markers
+	filterMarkers = (location) => {
 		this.fetchInfo(location)
 		this.state.markers.forEach( marker => {
 			marker.setMap(this.state.map)
 			if (marker.title === location.title) {
-				marker.setAnimation(window.google.maps.Animation.BOUNCE)
-				setTimeout( () => marker.setAnimation(null), 2100)
+				this.bounceMarker(marker)
 			} else {
 				marker.setMap(null)
 			}
@@ -114,7 +124,8 @@ class App extends Component {
 		this.setState( { locationInfo: '' } )
 	}
 
-	optionFilter = (e) => {
+	// Filtering places and markers
+	filterPlaces = (e) => {
 		this.state.locations.forEach( location => {
 			let thisPlace = document.querySelector(`#${location.name}`)
 
@@ -122,46 +133,51 @@ class App extends Component {
 				this.resetAll()
 			} else if (e.target.value === thisPlace.id) {
 				thisPlace.style.display = 'block'
-				this.filterInfo(location)
+				this.filterMarkers(location)
 			} else {
 				thisPlace.style.display = 'none'
 			}
 		})
 	}
 
-	animateDisplay = () => {
+	// Animation for Place info
+	animateOut = () => {
 		const container = document.querySelector('.display')
 		container.style.transform = 'translateX(-600px)'
-		setTimeout( () => {container.style.transform = 'translateX(0)'}, 200)
 	}
 
-  render() {
-    return (
-      <div className="App" tabIndex="0">
-				<div id="map" role="application"></div>
-				<aside>
-					<h1 tabIndex="0">Granada Places</h1>
-					<Filter
-						locations= { this.state.locations }
-						onSelectorChange= { this.optionFilter }
-					/>
-					<Display
-						info= { this.state.locationInfo }
-						link= { this.state.locationLink }
-					/>
-					<section>
-						{ this.state.locations.map( location => (
-							<Place
-								key= { location.name }
-								location= { location }
-								onPlaceClick= { this.displayInfo }
-							/>
-						))}
-					</section>
-				</aside>
-      </div>
-    )
-  }
+	animateIn = () => {
+		const container = document.querySelector('.display')
+		container.style.transform = 'translateX(0)'
+	}
+
+	render() {
+		return (
+		<div className="App" tabIndex="0">
+					<div id="map" role="application"></div>
+					<aside>
+						<h1 tabIndex="0">Granada Places</h1>
+						<Filter
+							locations= { this.state.locations }
+							onSelectorChange= { this.filterPlaces }
+						/>
+						<Display
+							info= { this.state.locationInfo }
+							link= { this.state.locationLink }
+						/>
+						<section>
+							{ this.state.locations.map( location => (
+								<Place
+									key= { location.name }
+									location= { location }
+									onPlaceClick= { this.displayInfo }
+								/>
+							))}
+						</section>
+					</aside>
+		</div>
+		)
+	}
 }
 
 export default App
