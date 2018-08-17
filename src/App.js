@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import * as Locations from '../src/data/locations.json'
 import Place from '../src/Place'
 import Filter from '../src/Filter'
+import Display from '../src/Display'
 import './App.css'
 
 class App extends Component {
@@ -114,15 +115,6 @@ class App extends Component {
 		})
 	}
 
-	display = () => {
-		return (
-			<div>
-				<h4>From Wikipedia:</h4>
-				<div>{ this.state.locationInfo }</div>
-			</div>
-		)
-	}
-
   render() {
     return (
       <div className="App">
@@ -141,7 +133,9 @@ class App extends Component {
 							/>
 						))}
 					</section>
-						{ this.display() }
+						<Display
+							info= { this.state.locationInfo }
+						/>
 				</aside>
 				<div id="map" role="application"></div>
       </div>
