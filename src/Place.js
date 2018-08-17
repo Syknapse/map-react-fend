@@ -9,9 +9,8 @@ class Place extends Component {
 	render() {
 		return (
 			<div id={this.props.location.name} className='place' key={ this.props.location.name } onClick={ this.handleClick } tabIndex="0">
-				<h3 tabIndex="0">{ this.props.location.name }</h3>
-				<div tabIndex="0">{ this.props.location.title }</div>
-				<hr/>
+				<h2>{ this.props.location.name }</h2>
+				<div>{ this.props.location.title }</div>
 			</div>
 		)
 	}

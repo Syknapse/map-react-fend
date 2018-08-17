@@ -13,6 +13,7 @@ class App extends Component {
 			map: '',
 			locations: Locations,
 			locationInfo: '',
+			locationLink: '',
 			markers: []
 		}
 	}
@@ -59,13 +60,15 @@ class App extends Component {
 	}
 
 	fetchInfo = (location) => {
-		fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=200&exintro&explaintext&titles=${location.wiki}&format=json&origin=*&formatversion=2`)
+		fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=500&exintro&explaintext&titles=${location.wiki}&format=json&origin=*&formatversion=2`)
 			.then( response => response.json())
 			.then( data => {
 				let info = data.query.pages[0].extract
+				let infoTitle = data.query.pages[0].title
 
 				this.setState( {
-					locationInfo: info
+					locationInfo: info,
+					locationLink: infoTitle
 				})
 			})
 			.catch( error => {
@@ -83,6 +86,7 @@ class App extends Component {
 		)
 		marker[0].setAnimation(window.google.maps.Animation.BOUNCE)
 		setTimeout( () => marker[0].setAnimation(null), 2100)
+		this.animateDisplay()
 	}
 
 	filterInfo = (location) => {
@@ -125,18 +129,25 @@ class App extends Component {
 		})
 	}
 
+	animateDisplay = () => {
+		const container = document.querySelector('.display')
+		container.style.transform = 'translateX(-600px)'
+		setTimeout( () => {container.style.transform = 'translateX(0)'}, 200)
+	}
+
   render() {
     return (
       <div className="App" tabIndex="0">
 				<div id="map" role="application"></div>
 				<aside>
-					<h2 tabIndex="0">Granada Places</h2>
+					<h1 tabIndex="0">Granada Places</h1>
 					<Filter
 						locations= { this.state.locations }
 						onSelectorChange= { this.optionFilter }
 					/>
 					<Display
 						info= { this.state.locationInfo }
+						link= { this.state.locationLink }
 					/>
 					<section>
 						{ this.state.locations.map( location => (
