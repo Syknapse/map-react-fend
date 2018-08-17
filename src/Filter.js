@@ -12,10 +12,12 @@ class Filter extends Component {
 
 	render() {
 		return (
-			<select onChange={ this.handleChange } id="place-filter">
-				<option value="all">All</option>
-				{ this.props.locations.map( location => this.option(location) ) }
-			</select>
+			<label htmlFor="place-filter">
+				<select onChange={ this.handleChange } id="place-filter">
+					<option value="all">All</option>
+					{ this.props.locations.map( location => this.option(location) ) }
+				</select>
+			</label>
 		)
 	}
 }

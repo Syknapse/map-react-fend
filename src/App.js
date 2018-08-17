@@ -127,10 +127,10 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="App" tabIndex="0">
 				<div id="map" role="application"></div>
 				<aside>
-					<h2>Granada Places</h2>
+					<h2 tabIndex="0">Granada Places</h2>
 					<Filter
 						locations= { this.state.locations }
 						onSelectorChange= { this.optionFilter }

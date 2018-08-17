@@ -18,8 +18,8 @@ class Display extends Component {
 		if (this.props.info) {
 			return (
 				<div>
-					<h4>From Wikipedia:</h4>
-					<p>{ this.props.info }</p>
+					<h4 tabIndex="0">From Wikipedia:</h4>
+					<p tabIndex="0">{ this.props.info }</p>
 				</div>
 			)
 		} else {
@@ -29,7 +29,7 @@ class Display extends Component {
 	
 	render() {
 		return (
-			<div className="display">
+			<div className="display" tabIndex="0">
 				{ this.content() }
 			</div>
 		)
