@@ -21,6 +21,20 @@ class App extends Component {
 		this.loadMap()
 	}
 
+	loadMap = () => {
+		// Create a script tag for the Google map credentials
+		const mapScript = document.createElement('script')
+		mapScript.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyA7S0jbcOmdypcdzYL8ZXA9JG1BGbcRNzY&callback=initMap'
+		mapScript.async = true
+		mapScript.onerror = () => {
+			document.write('Something went terribly wrong. Your map is probably in an alternative universe! (It is not your fault, try reloading)')
+			window.stop()
+		}
+
+		window.initMap = this.initMap
+		document.body.appendChild(mapScript)
+	}
+
 	initMap = () => {
 		const cuestaDelInfierno = {lat: 37.179307, lng: -3.588260}
 		let map = new  window.google.maps.Map(document.getElementById('map'), {
@@ -44,16 +58,6 @@ class App extends Component {
 		})
 	}
 
-	loadMap = () => {
-		// Create a script tag for the Google map credentials
-		const mapScript = document.createElement('script')
-		mapScript.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyA7S0jbcOmdypcdzYL8ZXA9JG1BGbcRNzY&callback=initMap'
-		mapScript.async = true
-
-		window.initMap = this.initMap
-		document.body.appendChild(mapScript)
-	}
-
 	fetchInfo = (location) => {
 		fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=200&exintro&explaintext&titles=${location.wiki}&format=json&origin=*&formatversion=2`)
 			.then( response => response.json())
@@ -63,6 +67,12 @@ class App extends Component {
 				this.setState( {
 					locationInfo: info
 				})
+			})
+			.catch( error => {
+				this.setState( {
+					locationInfo: 'We are terribly sorry, it seems the internet has been deleted (we suspect cats did it). Try reloading the page.'
+				})
+				console.log(error)
 			})
 	}
 
@@ -120,6 +130,7 @@ class App extends Component {
       <div className="App">
 				<div id="map" role="application"></div>
 				<aside>
+					<h2>Granada Places</h2>
 					<Filter
 						locations= { this.state.locations }
 						onSelectorChange= { this.optionFilter }
@@ -128,7 +139,6 @@ class App extends Component {
 						info= { this.state.locationInfo }
 					/>
 					<section>
-						<h2>Granada Places</h2>
 						{ this.state.locations.map( location => (
 							<Place
 								key= { location.name }
